@@ -46,6 +46,24 @@ if st.sidebar.checkbox('Display DataFrame'):
     st.write(mXmh_df)
 
 st.subheader('Plots')
-print(mXmh_df['Streaming_Platform'].value_counts())
+# print(mXmh_df['Streaming_Platform'].value_counts())
 
-st.write(plt.pie(mXmh_df['Streaming_Platform'].value_counts(), labels=mXmh_df['Streaming_Platform']))
+# st.write(plt.pie(mXmh_df['Streaming_Platform'].value_counts(), labels=mXmh_df['Streaming_Platform']))
+
+# col1, col2 = st.columns(2)
+
+# with col1:
+fig, ax = plt.subplots()
+mXmh_df.Age.hist(ax=ax)
+plt.xlabel('Age')
+plt.ylabel('Number of People')
+st.write(fig)
+st.caption('Age distribution')
+
+# with col2:
+fig, ax = plt.subplots()
+mXmh_df.Streaming_Platform.hist(ax=ax, figsize=(15,8))
+plt.xlabel('Platoform')
+plt.ylabel('Number of Users')
+st.write(fig)
+st.caption('Streaming_Platform distribution')
