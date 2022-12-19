@@ -11,8 +11,8 @@ mXmh_df = pd.read_csv('mxmh_survey_results.csv')
 # ---------- Cleaning NaN ----------
 # Column 'Age': replacing the null values (only one) with the mean from the Age column
 mXmh_df['Age'] = mXmh_df['Age'].fillna(mXmh_df['Age'].mean())
-# Column 'Primary streaming service': replacing the null values (only one) with the string 'No one'
-mXmh_df['Primary streaming service'] = mXmh_df['Primary streaming service'].fillna('No one')
+# Column 'Primary streaming service': replacing the null values (only one) with the string 'I do not use a streaming service.'
+mXmh_df['Primary streaming service'] = mXmh_df['Primary streaming service'].fillna('I do not use a streaming service.')
 # Column 'While working': replacing the null values with the string 'Not specified'
 mXmh_df['While working'] = mXmh_df['While working'].fillna('Not specified')
 # Column 'Instrumentalist': replacing the null values with the string 'Not specified'
@@ -29,6 +29,11 @@ mXmh_df['Music effects'] = mXmh_df['Music effects'].fillna('Not specified')
 # ---------- Delete columns 'Timestamp', 'Permissions' ----------
 mXmh_df.drop(['Timestamp', 'Permissions'], axis=1, inplace=True)
 
+# ---------- Rename columns 'Primary streaming service' to 'Streaming_Platform' ----------
+mXmh_df.rename(columns={'Primary streaming service':'Streaming_Platform'}, inplace=True)
+
+# print(mXmh_df.columns)
+
 mXmh_df.info()
 
 st.header('Music & Mental Healt')
@@ -39,3 +44,8 @@ st.sidebar.subheader('Settings')
 if st.sidebar.checkbox('Display DataFrame'):
     st.write('The DataFrame')
     st.write(mXmh_df)
+
+st.subheader('Plots')
+print(mXmh_df['Streaming_Platform'].value_counts())
+
+st.write(plt.pie(mXmh_df['Streaming_Platform'].value_counts(), labels=mXmh_df['Streaming_Platform']))
