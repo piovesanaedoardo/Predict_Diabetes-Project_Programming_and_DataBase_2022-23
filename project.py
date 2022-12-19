@@ -10,6 +10,8 @@ mXmh_df = pd.read_csv('mxmh_survey_results.csv')
 mXmh_df['Age'] = mXmh_df['Age'].fillna(mXmh_df['Age'].mean())
 # Column 'Primary streaming service': replacing the null values (only one) with the string 'No one'
 mXmh_df['Primary streaming service'] = mXmh_df['Primary streaming service'].fillna('No one')
+# Column 'While working': replacing the null values (only one) with the string 'Not specified'
+mXmh_df['While working'] = mXmh_df['While working'].fillna('Not specified')
 
 mXmh_df.info()
 
