@@ -4,9 +4,11 @@ import matplotlib.pyplot as plt
 
 # streamlit run .\project.py
 
-# -------------- DataFrame & cleaning --------------
+################## DataFrame & Cleaning ##################
+# import csv
 mXmh_df = pd.read_csv('mxmh_survey_results.csv')
 
+# ---------- Cleaning NaN ----------
 # Column 'Age': replacing the null values (only one) with the mean from the Age column
 mXmh_df['Age'] = mXmh_df['Age'].fillna(mXmh_df['Age'].mean())
 # Column 'Primary streaming service': replacing the null values (only one) with the string 'No one'
@@ -24,8 +26,8 @@ mXmh_df['BPM'] = mXmh_df['BPM'].fillna(mXmh_df['BPM'].mean())
 # Column 'Music effects': replacing the null values with the string 'Not specified'
 mXmh_df['Music effects'] = mXmh_df['Music effects'].fillna('Not specified')
 
-# delete columns 'Timestamp', 'Permissions'
-mXmh_df = mXmh_df.drop(['Timestamp', 'Permissions'], axis=1, inplace=True)
+# ---------- Delete columns 'Timestamp', 'Permissions' ----------
+mXmh_df.drop(['Timestamp', 'Permissions'], axis=1, inplace=True)
 
 mXmh_df.info()
 
