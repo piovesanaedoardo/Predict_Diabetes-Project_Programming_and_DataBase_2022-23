@@ -46,34 +46,37 @@ if st.sidebar.checkbox('Display DataFrame'):
     st.write(mXmh_df)
 
 st.subheader('Plots')
-# print('Value counts:', mXmh_df['Streaming_Platform'].value_counts())
+print('Value counts:', mXmh_df['Streaming_Platform'].value_counts())
 
 # st.write(plt.pie(mXmh_df['Streaming_Platform'].value_counts(), labels=mXmh_df['Streaming_Platform']))
 
 # col1, col2 = st.columns(2)
 
 # with col1:
-fig, ax = plt.subplots()
-mXmh_df.Age.hist(ax=ax)
-plt.xlabel('Age')
-plt.ylabel('Number of People')
-st.write(fig)
-st.caption('Age distribution')
+# fig, ax = plt.subplots()
+# mXmh_df.Age.hist(ax=ax)
+# plt.xlabel('Age')
+# plt.ylabel('Number of People')
+# st.write(fig)
+# st.caption('Age distribution')
 
 # with col2:
-fig, ax = plt.subplots()
-mXmh_df.Streaming_Platform.hist(ax=ax, figsize=(12,8))
-plt.xlabel('Platoform')
-plt.ylabel('Number of Users')
-st.write(fig)
-st.caption('Streaming_Platform distribution')
+# fig, ax = plt.subplots()
+# mXmh_df.Streaming_Platform.hist(ax=ax, figsize=(12,8))
+# plt.xlabel('Platoform')
+# plt.ylabel('Number of Users')
+# st.write(fig)
+# st.caption('Streaming_Platform distribution')
 
-platform_list = ['Spotify', 'YouTube Music', 'I do not use a streaming service.', 'Apple Music', 'Other streaming service', 'Pandora']
+platform_label = ['Spotify', 'YouTube Music', 'I do not use a streaming service.', 'Apple Music', 'Other streaming service', 'Pandora']
 platform_count = list(mXmh_df['Streaming_Platform'].value_counts())
+platform_colors = ['#2ca02c', 'red', 'grey', 'purple', '#1f77b4', '#ff7f0e']
 explode = (0.1, 0, 0, 0, 0, 0)  # only "explode" the 1st slice ('Spotify')
+
 fig1, ax1 = plt.subplots()
-ax1.pie(platform_count, explode=explode, labels=platform_list, autopct='%.2f',
-        shadow=True, startangle=90)
+ax1.pie(platform_count, explode=explode, autopct='%.1f%%',
+        shadow=False, startangle=90, colors=platform_colors)
 ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+plt.legend(platform_label, loc='best')
 st.pyplot(fig1)
 st.caption('Streaming_Platform distribution')
