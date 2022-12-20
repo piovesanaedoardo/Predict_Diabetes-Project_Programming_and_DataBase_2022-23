@@ -7,10 +7,6 @@ import matplotlib.pyplot as plt
 # import csv
 mXmh_df = pd.read_csv('mxmh_survey_results.csv')
 
-################## 1. Explore the dataset  ##################
-print(mXmh_df.corr())
-#############################################################
-
 ################## 2. Clean up the dataset ##################
 # ---------- Cleaning NaN ----------
 
@@ -35,8 +31,15 @@ mXmh_df['Music effects'] = mXmh_df['Music effects'].fillna('Not specified')
 mXmh_df.drop(['Timestamp', 'Permissions'], axis=1, inplace=True)
 
 # ---------- Rename columns 'Primary streaming service' to 'Streaming_Platform' ----------
-mXmh_df.rename(columns={'Primary streaming service':'Streaming_Platform'}, inplace=True)
 
+# ---------- Replace values in columns 'Frequency [Pop]' ----------
+mXmh_df.loc[mXmh_df['Frequency [Pop]'] == 'Never', 'Frequency [Pop]'] = 0
+#############################################################
+
+################## 1. Explore the dataset  ##################
+# print(mXmh_df.corr())
+# print(mXmh_df[['Instrumentalist','Composer','Depression','Insomnia']].corr())
+print('Value counts [POP]:', mXmh_df['Frequency [Pop]'].value_counts())
 #############################################################
 
 # print(mXmh_df.columns)
