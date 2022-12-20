@@ -4,11 +4,16 @@ import matplotlib.pyplot as plt
 
 # streamlit run .\project.py
 
-################## DataFrame & Cleaning ##################
 # import csv
 mXmh_df = pd.read_csv('mxmh_survey_results.csv')
 
+################## 1. Explore the dataset  ##################
+print(mXmh_df.corr())
+#############################################################
+
+################## 2. Clean up the dataset ##################
 # ---------- Cleaning NaN ----------
+
 # Column 'Age': replacing the null values (only one) with the mean from the Age column
 mXmh_df['Age'] = mXmh_df['Age'].fillna(mXmh_df['Age'].mean())
 # Column 'Primary streaming service': replacing the null values (only one) with the string 'I do not use a streaming service.'
@@ -32,9 +37,11 @@ mXmh_df.drop(['Timestamp', 'Permissions'], axis=1, inplace=True)
 # ---------- Rename columns 'Primary streaming service' to 'Streaming_Platform' ----------
 mXmh_df.rename(columns={'Primary streaming service':'Streaming_Platform'}, inplace=True)
 
+#############################################################
+
 # print(mXmh_df.columns)
 
-mXmh_df.info()
+# mXmh_df.info()
 
 st.header('Music & Mental Healt')
 st.subheader('Survey results on music taste and self-reported mental health')
@@ -46,7 +53,7 @@ if st.sidebar.checkbox('Display DataFrame'):
     st.write(mXmh_df)
 
 st.subheader('Plots')
-print('Value counts:', mXmh_df['Streaming_Platform'].value_counts())
+# print('Value counts:', mXmh_df['Streaming_Platform'].value_counts())
 
 # st.write(plt.pie(mXmh_df['Streaming_Platform'].value_counts(), labels=mXmh_df['Streaming_Platform']))
 
@@ -54,7 +61,7 @@ col1, col2 = st.columns(2)
 
 with col1:
     fig, ax = plt.subplots()
-    mXmh_df.Age.hist(ax=ax)
+    mXmh_df.Age.hist(ax=ax, bins=30)
     plt.xlabel('Age')
     plt.ylabel('Number of People')
     st.write(fig)
@@ -71,7 +78,7 @@ with col2:
     ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
     plt.legend(platform_label, loc='best')
     st.pyplot(fig1)
-    st.caption('Streaming_Platform distribution')
+    st.caption('Streaming Platform distribution')
 
 
 
