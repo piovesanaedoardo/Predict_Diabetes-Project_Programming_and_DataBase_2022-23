@@ -190,12 +190,25 @@ with col1_2:
 st.subheader('Plot Diabetic and BMI')
 
 fig, ax = plt.subplots()
-ax.hist([diabetic_df.BMI, not_diabetic_df.BMI], label=['Diabetic', 'Non-Diabetic'], color=['#4287f5', '#becee6'], bins=10)
+ax.hist([diabetic_df.BPLevel, not_diabetic_df.BPLevel], label=['Diabetic', 'Non-Diabetic'], color=['#4287f5', '#becee6'], bins=10)
 ax.set_ylabel("BMI level")
 plt.legend(loc='upper right')
 st.write(fig)
 st.caption('BMI of People with Diabet and without Diabet')
 
+# diabetic_df.to_csv('diab_clean.csv', encoding='utf-8', index=False)
+diab_clean_df = pd.read_csv('diab_clean.csv')
 
-print(diabetic_df.BMI.describe())
-print(not_diabetic_df.BMI.describe())
+diab_clean_df.info()
+
+# print(diab_clean_df.corr())
+
+st.subheader('Correlation Matrix')
+fig, ax = plt.subplots(figsize=(10, 8))
+corr = diab_clean_df.corr()
+sns.heatmap(corr, 
+    cmap=sns.diverging_palette(220, 10, as_cmap=True),
+    vmin=-1.0, vmax=1.0,
+    square=True, ax=ax)
+st.write(fig)
+st.caption('Matrix of Correlation')
