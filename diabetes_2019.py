@@ -119,14 +119,12 @@ diabetes_df['UriationFreq'].replace('yes','1', inplace=True)
 
 # remove capital letter in col 'Diabetic'
 diabetes_df['Diabetic'] = diabetes_df['Diabetic'].str.strip()
-# Replacing in col 'Diabetic' no with 0
-diabetes_df['Diabetic'].replace('no','0', inplace=True)
-# Replacing in col 'Diabetic' ' no' with 0
-diabetes_df['Diabetic'].replace(' no','0', inplace=True)
-# Replacing in col 'Diabetic' yes with 1
-diabetes_df['Diabetic'].replace('yes','1', inplace=True)
 # Replace null value with 0
 diabetes_df['Diabetic'] = diabetes_df['Diabetic'].fillna(0)
+# Replacing in col 'Diabetic' no with 0
+diabetes_df['Diabetic'].replace('no', '0.0', inplace=True)
+# Replacing in col 'Diabetic' yes with 1
+diabetes_df['Diabetic'].replace('yes', '1.0', inplace=True)
 
 # Column 'Pregancies': replacing the null values with 0
 diabetes_df['Pregancies'] = diabetes_df['Pregancies'].fillna(0)
@@ -140,10 +138,10 @@ diabetes_df = diabetes_df[diabetes_df['BMI'].notna()]
 
 # ---------------------------- 3. Show some interesting plots ----------------------------
 # split df in 2: diabets and not diabets
-diabetic_mask = diabetes_df['Diabetic'] == '1'
+diabetic_mask = diabetes_df['Diabetic'] == '1.0'
 diabetic_df = diabetes_df[diabetic_mask]
 
-not_diabetic_mask = diabetes_df['Diabetic'] == '0'
+not_diabetic_mask = diabetes_df['Diabetic'] == '0.0'
 not_diabetic_df = diabetes_df[not_diabetic_mask]
 
 st.header('Diabetes Dataset 2019')
@@ -196,12 +194,12 @@ plt.legend(loc='upper right')
 st.write(fig)
 st.caption('BMI of People with Diabet and without Diabet')
 
-# diabetic_df.to_csv('diab_clean.csv', encoding='utf-8', index=False)
+diabetic_df.to_csv('diab_clean.csv', encoding='utf-8', index=False)
 diab_clean_df = pd.read_csv('diab_clean.csv')
 
 diab_clean_df.info()
 
-# print(diab_clean_df.corr())
+print(diab_clean_df.corr())
 
 st.subheader('Correlation Matrix')
 fig, ax = plt.subplots(figsize=(10, 8))
