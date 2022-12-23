@@ -140,8 +140,11 @@ diabetes_df = diabetes_df[diabetes_df['BMI'].notna()]
 
 # ---------------------------- 3. Show some interesting plots ----------------------------
 # split df in 2: diabets and not diabets
-diabetic_df = diabetes_df.query('Diabetic == 1')
-not_diabetic_df = diabetes_df.query('Diabetic == 0')
+diabetic_mask = diabetes_df['Diabetic'] == '1'
+diabetic_df = diabetes_df[diabetic_mask]
+
+not_diabetic_mask = diabetes_df['Diabetic'] == '0'
+not_diabetic_df = diabetes_df[not_diabetic_mask]
 
 st.header('Diabetes Dataset 2019')
 st.subheader('Bla bla bla')
@@ -152,15 +155,15 @@ if st.sidebar.checkbox('Display DataFrame'):
     st.write('The DataFrame')
     st.write(diabetes_df)
 
-st.subheader('Correlation Matrix')
-fig, ax = plt.subplots(figsize=(10, 8))
-corr = diabetes_df.corr()
-sns.heatmap(corr, 
-    cmap=sns.diverging_palette(220, 10, as_cmap=True),
-    vmin=-1.0, vmax=1.0,
-    square=True, ax=ax)
-st.write(fig)
-st.caption('Matrix of Correlation')
+# st.subheader('Correlation Matrix')
+# fig, ax = plt.subplots(figsize=(10, 8))
+# corr = diabetes_df.corr()
+# sns.heatmap(corr, 
+#     cmap=sns.diverging_palette(220, 10, as_cmap=True),
+#     vmin=-1.0, vmax=1.0,
+#     square=True, ax=ax)
+# st.write(fig)
+# st.caption('Matrix of Correlation')
 
 st.subheader('Plot Diabetic and Age')
 col1_1, col1_2 = st.columns(2)
@@ -185,9 +188,14 @@ with col1_2:
     st.caption('Age distribution')
 
 st.subheader('Plot Diabetic and BMI')
+
 fig, ax = plt.subplots()
-ax.hist([diabetic_df['BMI'], not_diabetic_df['BMI']], label=['diabetic', 'not_diabetic'], color=['#4287f5', '#becee6'], bins=100)
+ax.hist([diabetic_df.BMI, not_diabetic_df.BMI], label=['Diabetic', 'Non-Diabetic'], color=['#4287f5', '#becee6'], bins=10)
 ax.set_ylabel("BMI level")
 plt.legend(loc='upper right')
 st.write(fig)
 st.caption('BMI of People with Diabet and without Diabet')
+
+
+print(diabetic_df.BMI.describe())
+print(not_diabetic_df.BMI.describe())
