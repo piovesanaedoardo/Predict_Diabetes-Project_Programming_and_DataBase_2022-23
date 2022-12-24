@@ -160,27 +160,26 @@ not_diabetic_clean_df['Diabetic'] = not_diabetic_clean_df['Diabetic'].fillna(0)
 frames = [diabetic_clean_df, not_diabetic_clean_df]
 diabetes_clean_df = pd.concat(frames)
 diabetes_clean_df.to_csv('diabetes_clean_df.csv', encoding='utf-8', index=False)
-print(diabetes_clean_df.info())
-print(diabetes_clean_df.corr())
+# print(diabetes_clean_df.info())
+# print(diabetes_clean_df.corr())
 
 st.header('Diabetes Dataset 2019')
 st.subheader('Bla bla bla')
 
 st.sidebar.subheader('Settings')
-
 if st.sidebar.checkbox('Display DataFrame'):
     st.write('The DataFrame')
     st.write(diabetes_clean_df)
 
-# st.subheader('Correlation Matrix')
-# fig, ax = plt.subplots(figsize=(10, 8))
-# corr = diabetes_df.corr()
-# sns.heatmap(corr, 
-#     cmap=sns.diverging_palette(220, 10, as_cmap=True),
-#     vmin=-1.0, vmax=1.0,
-#     square=True, ax=ax)
-# st.write(fig)
-# st.caption('Matrix of Correlation')
+st.subheader('Correlation Matrix')
+fig, ax = plt.subplots(figsize=(10, 8))
+corr = diabetes_clean_df.corr()
+sns.heatmap(corr, 
+    cmap=sns.color_palette("light:#124683", n_colors=20), # 220, 10 # diverging_palette(150, 10, as_cmap=True)
+    vmin=-1.0, vmax=1.0,
+    square=True, ax=ax)
+st.write(fig)
+st.caption('Matrix of Correlation')
 
 st.subheader('Diabetic and Age')
 col1_1, col1_2 = st.columns(2)
@@ -207,34 +206,83 @@ with col1_2:
 st.subheader('Plot Diabetic and BMI')
 
 fig, ax = plt.subplots()
-ax.hist([diabetic_df.BPLevel, not_diabetic_df.BPLevel], label=['Diabetic', 'Non-Diabetic'], color=['#4287f5', '#becee6'], bins=10)
+ax.hist([diabetic_clean_df.BMI, not_diabetic_clean_df.BMI], label=['Diabetic', 'Non-Diabetic'], color=['#4287f5', '#becee6'], bins=10)
 ax.set_ylabel("BMI level")
 plt.legend(loc='upper right')
 st.write(fig)
-st.caption('BMI of People with Diabet and without Diabet')
+st.caption('BMI of People with Diabet and without Diabet. \n If BMI is less than 18.5: underweight range. \n If BMI is 18.5 to <25: healthy weight range. \n If BMI is 25.0 to <30: overweight range. \n If BMI is 30.0 or higher: obesity range.')
 
+col2_1, col2_2 = st.columns(2)
+with col2_1:
+    diabetic_label = ['Diabetic with Regular Medicine', 'Diabetic without Regular Medicine']
+    diabetic_count = list(diabetic_clean_df['RegularMedicine'].value_counts())
+    colors_df = ['#4287f5', '#becee6']
+    explode = (0.1, 0)
+    fig, ax = plt.subplots()
+    ax.pie(diabetic_count, explode=explode, autopct='%.1f%%',
+            shadow=False, startangle=90, colors=colors_df)
+    ax.axis('equal')
+    plt.legend(diabetic_label, loc='best')
+    st.pyplot(fig)
+    st.caption('Diabetic Regular Medicine distribution')
+with col2_2:
+    diabetic_label = ['Diabetic with highBP', 'Diabetic without highBP']
+    diabetic_count = list(diabetic_clean_df['highBP'].value_counts())
+    colors_df = ['#4287f5', '#becee6']
+    explode = (0.1, 0)
+    fig, ax = plt.subplots()
+    ax.pie(diabetic_count, explode=explode, autopct='%.1f%%',
+            shadow=False, startangle=90, colors=colors_df)
+    ax.axis('equal')
+    plt.legend(diabetic_label, loc='best')
+    st.pyplot(fig)
+    st.caption('Diabetic highBP distribution')
 
-diabetic_label = ['Regular Medicine', 'Non Regular Medicine']
-diabetic_count = list(diabetic_clean_df['RegularMedicine'].value_counts())
-print('VALUEEEEEEEEEEEE', diabetic_clean_df['RegularMedicine'].value_counts())
-colors_df = ['#4287f5', '#becee6']
-explode = (0.1, 0)
-fig, ax = plt.subplots()
-ax.pie(diabetic_count, explode=explode, autopct='%.1f%%',
-        shadow=False, startangle=90, colors=colors_df)
-ax.axis('equal')
-plt.legend(diabetic_label, loc='best')
-st.pyplot(fig)
-st.caption('Diabetic Regular Medicine distribution')
+col3_1, col3_2 = st.columns(2)
+with col3_1:
+    diabetic_label = ['Diabetic Male', 'Diabetic Female']
+    diabetic_count = list(diabetic_clean_df['Gender'].value_counts())
+    colors_df = ['#4287f5', '#becee6']
+    explode = (0.1, 0)
+    fig, ax = plt.subplots()
+    ax.pie(diabetic_count, explode=explode, autopct='%.1f%%',
+            shadow=False, startangle=90, colors=colors_df)
+    ax.axis('equal')
+    plt.legend(diabetic_label, loc='best')
+    st.pyplot(fig)
+    st.caption('Diabetic gender distribution')
+with col3_2:
+    fig, ax = plt.subplots()
+    ax.hist([diabetic_clean_df.PhysicallyActive, not_diabetic_clean_df.PhysicallyActive], 
+            label=['Diabetic', 'Non-Diabetic'], 
+            color=['#4287f5', '#becee6'], 
+            bins=10,
+            ) #.loc[['none', 'less than half an hr', 'more than half an hr', 'one hr or more']]
+    ax.set_ylabel("PhysicallyActive level")
+    plt.legend(loc='upper right')
+    st.write(fig)
+    st.caption('PhysicallyActive People with Diabet and without Diabet')
 
-st.subheader('Correlation Matrix')
-fig, ax = plt.subplots(figsize=(10, 8))
-corr = diabetes_clean_df.corr()
-sns.heatmap(corr, 
-    cmap=sns.diverging_palette(220, 10, as_cmap=True),
-    vmin=-1.0, vmax=1.0,
-    square=True, ax=ax)
-st.write(fig)
-st.caption('Matrix of Correlation')
-
-
+col4_1, col4_2 = st.columns(2)
+with col4_1:
+    fig, ax = plt.subplots()
+    ax.hist([diabetic_clean_df.Stress, not_diabetic_clean_df.Stress], 
+            label=['Diabetic', 'Non-Diabetic'], 
+            color=['#4287f5', '#becee6'], 
+            bins=10,
+            ) #.loc[['none', 'less than half an hr', 'more than half an hr', 'one hr or more']]
+    ax.set_ylabel("Stress level")
+    plt.legend(loc='upper right')
+    st.write(fig)
+    st.caption('Stress People with Diabet and without Diabet')
+with col4_2:
+    fig, ax = plt.subplots()
+    ax.hist([diabetic_clean_df.BPLevel, not_diabetic_clean_df.BPLevel], 
+            label=['Diabetic', 'Non-Diabetic'], 
+            color=['#4287f5', '#becee6'], 
+            bins=10,
+            ) #.loc[['none', 'less than half an hr', 'more than half an hr', 'one hr or more']]
+    ax.set_ylabel("BP level")
+    plt.legend(loc='upper right')
+    st.write(fig)
+    st.caption('BPLevel People with Diabet and without Diabet')
