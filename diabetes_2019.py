@@ -53,6 +53,16 @@ diabetes_df = pd.read_csv('diabetes_dataset__2019.csv')
 #     print(diabetes_df[col].value_counts())
 #     print("\n")
 
+# Replacing in col 'Age' less than 40 with 0-40
+diabetes_df['Age'].replace('less than 40','0-40', inplace=True)
+# Replacing in col 'Age' 40-49 with 40,49
+diabetes_df['Age'].replace('40-49','40-49', inplace=True)
+# Replacing in col 'Age' 50-59 with 50,59
+diabetes_df['Age'].replace('50-59','50-59', inplace=True)
+# Replacing in col 'Gender' Female with 1
+diabetes_df['Age'].replace('60 or older','60-99', inplace=True)
+print(diabetes_df['Age'].unique())
+
 # Replacing in col 'Gender' Male with 0
 diabetes_df['Gender'].replace('Male','0', inplace=True)
 # Replacing in col 'Gender' Female with 1
@@ -136,7 +146,6 @@ diabetes_df = diabetes_df[diabetes_df['BMI'].notna()]
 
 # print(diabetes_df.info())
 
-# ---------------------------- 3. Show some interesting plots ----------------------------
 # split df in 2: diabets and not diabets
 diabetic_mask = diabetes_df['Diabetic'] == '1'
 diabetic_df = diabetes_df[diabetic_mask]
@@ -145,7 +154,7 @@ not_diabetic_mask = diabetes_df['Diabetic'] == '0'
 not_diabetic_df = diabetes_df[not_diabetic_mask]
 
 diabetic_df.to_csv('diab_clean.csv', encoding='utf-8', index=False)
-diabetic_clean_df = pd.read_csv('diab_clean_try.csv')
+diabetic_clean_df = pd.read_csv('diab_clean.csv') #diab_clean_try
 diabetic_clean_df['Diabetic'] = diabetic_clean_df['Diabetic'].fillna(1)
 # print(diabetic_clean_df.info())
 # print(diabetic_clean_df.corr())
@@ -163,8 +172,12 @@ diabetes_clean_df.to_csv('diabetes_clean_df.csv', encoding='utf-8', index=False)
 # print(diabetes_clean_df.info())
 # print(diabetes_clean_df.corr())
 
+diabetic_clean_df['Age'] = pd.Categorical(diabetic_clean_df['Age'], ['0-40','40-49','50-59','60-99'], ordered=True)
+not_diabetic_clean_df['Age'] = pd.Categorical(not_diabetic_clean_df['Age'], ['0-40','40-49','50-59','60-99'], ordered=True)
+
+# ---------------------------- 3. Show some interesting plots ----------------------------
 st.header('Diabetes Dataset 2019')
-st.subheader('Bla bla bla')
+st.subheader('Write a caption.')
 
 st.sidebar.subheader('Settings')
 if st.sidebar.checkbox('Display DataFrame'):
@@ -181,14 +194,14 @@ sns.heatmap(corr,
 st.write(fig)
 st.caption('Matrix of Correlation')
 
-st.subheader('Diabetic and Age')
+st.subheader('Diabetes and Age')
 col1_1, col1_2 = st.columns(2)
 with col1_1:
     diabetic_label = ['Non-Diabetic', 'Diabetic']
     diabetic_count = list(diabetes_clean_df['Diabetic'].value_counts())
     colors_df = ['#becee6', '#4287f5'] # not / diab
     explode = (0.1, 0)
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(6, 4))
     ax.pie(diabetic_count, explode=explode, autopct='%.1f%%',
             shadow=False, startangle=90, colors=colors_df)
     ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
@@ -196,18 +209,25 @@ with col1_1:
     st.pyplot(fig)
     st.caption('Diabetic distribution')
 with col1_2:
-    fig, ax = plt.subplots()
-    diabetes_clean_df.Age.hist(ax=ax, bins=30)
-    plt.xlabel('Age')
-    plt.ylabel('Number of People')
+    fig, ax = plt.subplots(figsize=(6, 4))
+    ax.hist([diabetic_clean_df.Age,
+             not_diabetic_clean_df.Age], 
+             label=['Diabetic', 'Non-Diabetic'], 
+             color=['#4287f5', '#becee6'], 
+             bins=4
+    )
+    # diabetic_clean_df.mycolumn.plot.bar()
+    ax.set_xlabel("Age")
+    ax.set_ylabel("Number of people")
+    plt.legend(loc='upper right')
     st.write(fig)
-    st.caption('Age distribution')
+    st.caption('Diabetes and Age')
 
 st.subheader('Plot Diabetic and BMI')
-
 fig, ax = plt.subplots()
 ax.hist([diabetic_clean_df.BMI, not_diabetic_clean_df.BMI], label=['Diabetic', 'Non-Diabetic'], color=['#4287f5', '#becee6'], bins=10)
-ax.set_ylabel("BMI level")
+ax.set_xlabel("BMI level")
+ax.set_ylabel("Number of people")
 plt.legend(loc='upper right')
 st.write(fig)
 st.caption('BMI of People with Diabet and without Diabet. \n If BMI is less than 18.5: underweight range. \n If BMI is 18.5 to <25: healthy weight range. \n If BMI is 25.0 to <30: overweight range. \n If BMI is 30.0 or higher: obesity range.')
@@ -270,7 +290,7 @@ with col4_1:
             label=['Diabetic', 'Non-Diabetic'], 
             color=['#4287f5', '#becee6'], 
             bins=10,
-            ) #.loc[['none', 'less than half an hr', 'more than half an hr', 'one hr or more']]
+            ) # not at all, sometimes, very often, always
     ax.set_ylabel("Stress level")
     plt.legend(loc='upper right')
     st.write(fig)
@@ -286,3 +306,29 @@ with col4_2:
     plt.legend(loc='upper right')
     st.write(fig)
     st.caption('BPLevel People with Diabet and without Diabet')
+
+col5_1, col5_2 = st.columns(2)
+with col5_1:
+    diabetic_label = ['Diabetic Pdiabetes NO', 'Diabetic Pdiabetes YES']
+    diabetic_count = list(diabetic_clean_df['Pdiabetes'].value_counts())
+    # print(diabetic_clean_df['Pdiabetes'].value_counts())
+    colors_df = ['#4287f5', '#becee6']
+    explode = (0.1, 0)
+    fig, ax = plt.subplots()
+    ax.pie(diabetic_count, explode=explode, autopct='%.1f%%',
+            shadow=False, startangle=90, colors=colors_df)
+    ax.axis('equal')
+    plt.legend(diabetic_label, loc='best')
+    st.pyplot(fig)
+    st.caption('Diabetic Pdiabetes distribution')
+with col5_2:
+    fig, ax = plt.subplots()
+    ax.hist([diabetic_clean_df.UriationFreq, not_diabetic_clean_df.UriationFreq], 
+            label=['Diabetic', 'Non-Diabetic'], 
+            color=['#4287f5', '#becee6'], 
+            bins=10,
+            ) #.loc[['none', 'less than half an hr', 'more than half an hr', 'one hr or more']]
+    ax.set_ylabel("UriationFreq")
+    plt.legend(loc='upper right')
+    st.write(fig)
+    st.caption('UriationFreq People with Diabet and without Diabet')
