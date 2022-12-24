@@ -158,9 +158,10 @@ not_diabetic_clean_df['Diabetic'] = not_diabetic_clean_df['Diabetic'].fillna(0)
 # print(not_diabetic_clean_df.corr())
 
 frames = [diabetic_clean_df, not_diabetic_clean_df]
-result = pd.concat(frames)
-print(result.info())
-print(result.corr())
+diabetes_clean_df = pd.concat(frames)
+diabetes_clean_df.to_csv('diabetes_clean_df.csv', encoding='utf-8', index=False)
+print(diabetes_clean_df.info())
+print(diabetes_clean_df.corr())
 
 st.header('Diabetes Dataset 2019')
 st.subheader('Bla bla bla')
@@ -169,7 +170,7 @@ st.sidebar.subheader('Settings')
 
 if st.sidebar.checkbox('Display DataFrame'):
     st.write('The DataFrame')
-    st.write(diabetes_df)
+    st.write(diabetes_clean_df)
 
 # st.subheader('Correlation Matrix')
 # fig, ax = plt.subplots(figsize=(10, 8))
@@ -181,11 +182,11 @@ if st.sidebar.checkbox('Display DataFrame'):
 # st.write(fig)
 # st.caption('Matrix of Correlation')
 
-st.subheader('Plot Diabetic and Age')
+st.subheader('Diabetic and Age')
 col1_1, col1_2 = st.columns(2)
 with col1_1:
     diabetic_label = ['Non-Diabetic', 'Diabetic']
-    diabetic_count = list(diabetes_df['Diabetic'].value_counts())
+    diabetic_count = list(diabetes_clean_df['Diabetic'].value_counts())
     colors_df = ['#becee6', '#4287f5'] # not / diab
     explode = (0.1, 0)
     fig, ax = plt.subplots()
@@ -197,7 +198,7 @@ with col1_1:
     st.caption('Diabetic distribution')
 with col1_2:
     fig, ax = plt.subplots()
-    diabetes_df.Age.hist(ax=ax, bins=30)
+    diabetes_clean_df.Age.hist(ax=ax, bins=30)
     plt.xlabel('Age')
     plt.ylabel('Number of People')
     st.write(fig)
@@ -212,9 +213,23 @@ plt.legend(loc='upper right')
 st.write(fig)
 st.caption('BMI of People with Diabet and without Diabet')
 
+
+diabetic_label = ['Regular Medicine', 'Non Regular Medicine']
+diabetic_count = list(diabetic_clean_df['RegularMedicine'].value_counts())
+print('VALUEEEEEEEEEEEE', diabetic_clean_df['RegularMedicine'].value_counts())
+colors_df = ['#4287f5', '#becee6']
+explode = (0.1, 0)
+fig, ax = plt.subplots()
+ax.pie(diabetic_count, explode=explode, autopct='%.1f%%',
+        shadow=False, startangle=90, colors=colors_df)
+ax.axis('equal')
+plt.legend(diabetic_label, loc='best')
+st.pyplot(fig)
+st.caption('Diabetic Regular Medicine distribution')
+
 st.subheader('Correlation Matrix')
 fig, ax = plt.subplots(figsize=(10, 8))
-corr = result.corr()
+corr = diabetes_clean_df.corr()
 sns.heatmap(corr, 
     cmap=sns.diverging_palette(220, 10, as_cmap=True),
     vmin=-1.0, vmax=1.0,
@@ -223,8 +238,3 @@ st.write(fig)
 st.caption('Matrix of Correlation')
 
 
-
-y = result.Diabetic
-x = result.highBP
-correlationDH = y.corr(x)
-print(correlationDH)
