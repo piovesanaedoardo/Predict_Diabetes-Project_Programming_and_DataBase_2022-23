@@ -54,13 +54,13 @@ diabetes_df = pd.read_csv('diabetes_dataset__2019.csv')
 #     print("\n")
 
 # Replacing in col 'Age' less than 40 with 0-40
-diabetes_df['Age'].replace('less than 40','0-40', inplace=True)
+diabetes_df['Age'].replace('less than 40','0.40', inplace=True)
 # Replacing in col 'Age' 40-49 with 40,49
-diabetes_df['Age'].replace('40-49','40-49', inplace=True)
+diabetes_df['Age'].replace('40-49','40.49', inplace=True)
 # Replacing in col 'Age' 50-59 with 50,59
-diabetes_df['Age'].replace('50-59','50-59', inplace=True)
+diabetes_df['Age'].replace('50-59','50.59', inplace=True)
 # Replacing in col 'Gender' Female with 1
-diabetes_df['Age'].replace('60 or older','60-99', inplace=True)
+diabetes_df['Age'].replace('60 or older','60.99', inplace=True)
 print(diabetes_df['Age'].unique())
 
 # Replacing in col 'Gender' Male with 0
@@ -77,6 +77,15 @@ diabetes_df['Family_Diabetes'].replace('yes','1', inplace=True)
 diabetes_df['highBP'].replace('no','0', inplace=True)
 # Replacing in col 'highBP' yes with 1
 diabetes_df['highBP'].replace('yes','1', inplace=True)
+
+# Replacing in col 'PhysicallyActive' none with 0
+df['PhysicallyActive'].replace('none',0, inplace=True)
+# Replacing in col 'PhysicallyActive' less than half an hr with 1
+df['PhysicallyActive'].replace('less than half an hr',1, inplace=True)
+# Replacing in col 'PhysicallyActive' more than half an hr with 2
+df['PhysicallyActive'].replace('more than half an hr',2, inplace=True)
+# Replacing in col 'PhysicallyActive' one hr or more with 3
+df['PhysicallyActive'].replace('one hr or more',3, inplace=True)
 
 # Replacing in col 'Smoking' no with 0
 diabetes_df['Smoking'].replace('no','0', inplace=True)
@@ -114,6 +123,12 @@ diabetes_df['Stress'].replace('always','3', inplace=True)
 
 # remove capital letter and spacing
 diabetes_df['BPLevel'] = diabetes_df['BPLevel'].str.lower().str.strip()
+# Replacing in col 'BPLevel' low with 0
+df['BPLevel'].replace('low',0, inplace=True)
+# Replacing in col 'BPLevel' normal with 1
+df['BPLevel'].replace('normal',1, inplace=True)
+# Replacing in col 'BPLevel' high with 2
+df['BPLevel'].replace('high',2, inplace=True)
 
 # Column 'Pregancies': replacing the null values with 0
 diabetes_df['Pdiabetes'] = diabetes_df['Pdiabetes'].fillna(0)
@@ -122,10 +137,10 @@ diabetes_df['Pdiabetes'].replace('no','0', inplace=True)
 # Replacing in col 'Pdiabetes' yes with 1
 diabetes_df['Pdiabetes'].replace('yes','1', inplace=True)
 
-# Replacing in col 'UriationFreq' no with 0
-diabetes_df['UriationFreq'].replace('no','0', inplace=True)
-# Replacing in col 'Pdiabetes' yes with 1
-diabetes_df['UriationFreq'].replace('yes','1', inplace=True)
+# Replacing in col 'UriationFreq' not much with 0
+diabetes_df['UriationFreq'].replace('not much','0', inplace=True)
+# Replacing in col 'UriationFreq' quite often with 1
+diabetes_df['UriationFreq'].replace('quite often','1', inplace=True)
 
 # remove capital letter in col 'Diabetic'
 diabetes_df['Diabetic'] = diabetes_df['Diabetic'].str.strip()
