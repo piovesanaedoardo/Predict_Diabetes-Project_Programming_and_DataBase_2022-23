@@ -12,7 +12,7 @@ diabetes_df = pd.read_csv('diabetes_dataset__2019.csv')
 # cd Documenti/Project of Programming and Database
 # streamlit run .\diabetes_2019.py
 
-# ---------------------------- 1. Explore the dataset ----------------------------
+# ---------------------------- 1.1 Explore the dataset ----------------------------
 # print(diabetes_df.info())
 # Data columns (total 18 columns):
 #  #   Column            Non-Null Count  Dtype
@@ -49,7 +49,7 @@ diabetes_df = pd.read_csv('diabetes_dataset__2019.csv')
 # (i.e. the column 'Family_Diabetes' has value 'yes'/'no'. I change this values by replacing 1/0)
 
 
-# ---------------------------- 2. Clean up the dataset ----------------------------
+# ---------------------------- 1.2 Clean up the dataset ----------------------------
 # see the value of each column
 # print('see the value of each column')
 # for col in diabetes_df.columns:
@@ -194,7 +194,7 @@ diabetes_clean_df.to_csv('diabetes_clean_df.csv', encoding='utf-8', index=False)
 diabetic_clean_df['Age'] = pd.Categorical(diabetic_clean_df['Age'], ['0-40','40-49','50-59','60-99'], ordered=True)
 not_diabetic_clean_df['Age'] = pd.Categorical(not_diabetic_clean_df['Age'], ['0-40','40-49','50-59','60-99'], ordered=True)
 
-# ---------------------------- 3. Show some interesting plots ----------------------------
+# ---------------------------- 1.3 Show some interesting plots ----------------------------
 st.header('Diabetes Dataset 2019')
 st.subheader('Write a caption.')
 
@@ -352,7 +352,7 @@ with col5_2:
     st.write(fig)
     st.caption('UriationFreq People with Diabet and without Diabet')
 
-# print(diabetic_clean_df.info())
+# ---------------------------- 2 Find a model that explains tha data ----------------------------
 
 # Split the dataset into features and labels
 X = diabetes_clean_df.drop("Diabetic", axis=1)
@@ -361,6 +361,7 @@ y = diabetes_clean_df["Diabetic"]
 # Split the dataset into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+# ------ CLASSIFICATION MODEL ------
 # Scale the features
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
@@ -373,3 +374,25 @@ model.fit(X_train, y_train)
 # Evaluate the model
 y_pred = model.predict(X_test)
 st.write("Accuracy:", accuracy_score(y_test, y_pred))
+
+# ------ LOGISTIC REGRESSION ------
+from sklearn.linear_model import LogisticRegression
+# Create an instance of the classifier
+clf = LogisticRegression()
+
+# Train the model on the training data
+clf.fit(X_train, y_train)
+
+from sklearn.metrics import accuracy_score, precision_score, f1_score
+# Make predictions on the test set
+y_pred = clf.predict(X_test)
+
+# Calculate the accuracy, precision, and F1 score
+acc = accuracy_score(y_test, y_pred)
+prec = precision_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
+
+# Print the results
+print(f'Accuracy: {acc:.2f}')
+print(f'Precision: {prec:.2f}')
+print(f'F1 Score: {f1:.2f}')
