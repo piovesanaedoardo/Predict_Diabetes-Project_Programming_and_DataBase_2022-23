@@ -352,9 +352,11 @@ with col5_2:
     st.write(fig)
     st.caption('UriationFreq People with Diabet and without Diabet')
 
+# print(diabetic_clean_df.info())
+
 # Split the dataset into features and labels
-X = diabetic_clean_df.drop("Diabetic", axis=1)
-y = diabetic_clean_df["Diabetic"]
+X = diabetes_clean_df.drop("Diabetic", axis=1)
+y = diabetes_clean_df["Diabetic"]
 
 # Split the dataset into training and testing sets
 # from sklearn.model_selection import train_test_split
