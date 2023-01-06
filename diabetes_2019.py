@@ -2,6 +2,10 @@ import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
 
 diabetes_df = pd.read_csv('diabetes_dataset__2019.csv')
 
@@ -79,13 +83,13 @@ diabetes_df['highBP'].replace('no','0', inplace=True)
 diabetes_df['highBP'].replace('yes','1', inplace=True)
 
 # Replacing in col 'PhysicallyActive' none with 0
-df['PhysicallyActive'].replace('none',0, inplace=True)
+diabetes_df['PhysicallyActive'].replace('none',0, inplace=True)
 # Replacing in col 'PhysicallyActive' less than half an hr with 1
-df['PhysicallyActive'].replace('less than half an hr',1, inplace=True)
+diabetes_df['PhysicallyActive'].replace('less than half an hr',1, inplace=True)
 # Replacing in col 'PhysicallyActive' more than half an hr with 2
-df['PhysicallyActive'].replace('more than half an hr',2, inplace=True)
+diabetes_df['PhysicallyActive'].replace('more than half an hr',2, inplace=True)
 # Replacing in col 'PhysicallyActive' one hr or more with 3
-df['PhysicallyActive'].replace('one hr or more',3, inplace=True)
+diabetes_df['PhysicallyActive'].replace('one hr or more',3, inplace=True)
 
 # Replacing in col 'Smoking' no with 0
 diabetes_df['Smoking'].replace('no','0', inplace=True)
@@ -124,11 +128,11 @@ diabetes_df['Stress'].replace('always','3', inplace=True)
 # remove capital letter and spacing
 diabetes_df['BPLevel'] = diabetes_df['BPLevel'].str.lower().str.strip()
 # Replacing in col 'BPLevel' low with 0
-df['BPLevel'].replace('low',0, inplace=True)
+diabetes_df['BPLevel'].replace('low',0, inplace=True)
 # Replacing in col 'BPLevel' normal with 1
-df['BPLevel'].replace('normal',1, inplace=True)
+diabetes_df['BPLevel'].replace('normal',1, inplace=True)
 # Replacing in col 'BPLevel' high with 2
-df['BPLevel'].replace('high',2, inplace=True)
+diabetes_df['BPLevel'].replace('high',2, inplace=True)
 
 # Column 'Pregancies': replacing the null values with 0
 diabetes_df['Pdiabetes'] = diabetes_df['Pdiabetes'].fillna(0)
@@ -223,20 +227,20 @@ with col1_1:
     plt.legend(diabetic_label, loc='best')
     st.pyplot(fig)
     st.caption('Diabetic distribution')
-with col1_2:
-    fig, ax = plt.subplots(figsize=(6, 4))
-    ax.hist([diabetic_clean_df.Age,
-             not_diabetic_clean_df.Age], 
-             label=['Diabetic', 'Non-Diabetic'], 
-             color=['#4287f5', '#becee6'], 
-             bins=4
-    )
-    # diabetic_clean_df.mycolumn.plot.bar()
-    ax.set_xlabel("Age")
-    ax.set_ylabel("Number of people")
-    plt.legend(loc='upper right')
-    st.write(fig)
-    st.caption('Diabetes and Age')
+# with col1_2:
+#     fig, ax = plt.subplots(figsize=(6, 4))
+#     ax.hist([diabetic_clean_df.Age,
+#              not_diabetic_clean_df.Age], 
+#              label=['Diabetic', 'Non-Diabetic'], 
+#              color=['#4287f5', '#becee6'], 
+#              bins=4
+#     )
+#     # diabetic_clean_df.mycolumn.plot.bar()
+#     ax.set_xlabel("Age")
+#     ax.set_ylabel("Number of people")
+#     plt.legend(loc='upper right')
+#     st.write(fig)
+#     st.caption('Diabetes and Age')
 
 st.subheader('Plot Diabetic and BMI')
 fig, ax = plt.subplots()
@@ -347,3 +351,27 @@ with col5_2:
     plt.legend(loc='upper right')
     st.write(fig)
     st.caption('UriationFreq People with Diabet and without Diabet')
+
+# Split the dataset into features and labels
+X = diabetic_clean_df.drop("Diabetic", axis=1)
+y = diabetic_clean_df["Diabetic"]
+
+# Split the dataset into training and testing sets
+# from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Scale the features
+# from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Train the model
+# from sklearn.ensemble import RandomForestClassifier
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Evaluate the model
+# from sklearn.metrics import accuracy_score
+y_pred = model.predict(X_test)
+print("Accuracy:", accuracy_score(y_test, y_pred))
