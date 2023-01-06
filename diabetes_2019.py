@@ -359,21 +359,17 @@ X = diabetes_clean_df.drop("Diabetic", axis=1)
 y = diabetes_clean_df["Diabetic"]
 
 # Split the dataset into training and testing sets
-# from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Scale the features
-# from sklearn.preprocessing import StandardScaler
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
 # Train the model
-# from sklearn.ensemble import RandomForestClassifier
 model = RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 
 # Evaluate the model
-# from sklearn.metrics import accuracy_score
 y_pred = model.predict(X_test)
-print("Accuracy:", accuracy_score(y_test, y_pred))
+st.write("Accuracy:", accuracy_score(y_test, y_pred))
