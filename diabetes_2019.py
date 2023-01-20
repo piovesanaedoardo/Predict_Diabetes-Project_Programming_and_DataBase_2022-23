@@ -194,9 +194,13 @@ diabetes_clean_df.to_csv('diabetes_clean_df.csv', encoding='utf-8', index=False)
 diabetic_clean_df['Age'] = pd.Categorical(diabetic_clean_df['Age'], ['0-40','40-49','50-59','60-99'], ordered=True)
 not_diabetic_clean_df['Age'] = pd.Categorical(not_diabetic_clean_df['Age'], ['0-40','40-49','50-59','60-99'], ordered=True)
 
+diab_df = pd.read_csv('diab_clean.csv')
+not_diab_df = pd.read_csv('not_diab_clean.csv')
+
 # ---------------------------- 1.3 Show some interesting plots ----------------------------
 st.header('Diabetes Dataset 2019')
 st.subheader('Write a caption.')
+st.write('The aim of this ...')
 
 st.sidebar.subheader('Settings')
 if st.sidebar.checkbox('Display DataFrame'):
@@ -227,7 +231,21 @@ with col1_1:
     plt.legend(diabetic_label, loc='best')
     st.pyplot(fig)
     st.caption('Diabetic distribution')
-# with col1_2:
+with col1_2:
+    fig, ax = plt.subplots(figsize=(6, 4))
+    ax.hist([diabetes_clean_df.Age,
+        not_diab_df.Age], 
+        label=['Diabetic', 'Non-Diabetic'], 
+        color=['#4287f5', '#becee6'], 
+        bins=4
+    )
+    # diabetic_clean_df.mycolumn.plot.bar()
+    ax.set_xlabel("Age")
+    ax.set_ylabel("Number of people")
+    plt.legend(loc='upper right')
+    st.write(fig)
+    st.caption('Diabetes and Age')
+#     st.caption('Diabetes and Age')
 #     fig, ax = plt.subplots(figsize=(6, 4))
 #     ax.hist([diabetic_clean_df.Age,
 #              not_diabetic_clean_df.Age], 
