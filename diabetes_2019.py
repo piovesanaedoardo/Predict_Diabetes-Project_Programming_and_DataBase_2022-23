@@ -58,14 +58,14 @@ diabetes_df = pd.read_csv('diabetes_dataset__2019.csv')
 #     print("\n")
 
 # Replacing in col 'Age' less than 40 with 0-40
-diabetes_df['Age'].replace('less than 40','0.40', inplace=True)
+diabetes_df['Age'].replace('less than 40','0-40', inplace=True)
 # Replacing in col 'Age' 40-49 with 40,49
-diabetes_df['Age'].replace('40-49','40.49', inplace=True)
+# diabetes_df['Age'].replace('40-49','40-49', inplace=True)
 # Replacing in col 'Age' 50-59 with 50,59
-diabetes_df['Age'].replace('50-59','50.59', inplace=True)
+# diabetes_df['Age'].replace('50-59','50-59', inplace=True)
 # Replacing in col 'Gender' Female with 1
-diabetes_df['Age'].replace('60 or older','60.99', inplace=True)
-print(diabetes_df['Age'].unique())
+diabetes_df['Age'].replace('60 or older','60-99', inplace=True)
+# print(diabetes_df['Age'].unique())
 
 # Replacing in col 'Gender' Male with 0
 diabetes_df['Gender'].replace('Male','0', inplace=True)
@@ -177,22 +177,20 @@ diabetic_clean_df = pd.read_csv('diab_clean.csv') #diab_clean_try
 diabetic_clean_df['Diabetic'] = diabetic_clean_df['Diabetic'].fillna(1)
 # print(diabetic_clean_df.info())
 # print(diabetic_clean_df.corr())
-
-
 not_diabetic_df.to_csv('not_diab_clean.csv', encoding='utf-8', index=False)
 not_diabetic_clean_df = pd.read_csv('not_diab_clean.csv')
 not_diabetic_clean_df['Diabetic'] = not_diabetic_clean_df['Diabetic'].fillna(0)
 # print(not_diabetic_clean_df.info())
 # print(not_diabetic_clean_df.corr())
 
+# diabetic_clean_df.Age = pd.Categorical(diabetic_clean_df.Age, categories=['0-40','40-49','50-59','60-99'], ordered=True)
+# not_diabetic_clean_df.Age = pd.Categorical(not_diabetic_clean_df.Age, categories=['0-40','40-49','50-59','60-99'], ordered=True)
+
 frames = [diabetic_clean_df, not_diabetic_clean_df]
 diabetes_clean_df = pd.concat(frames)
 diabetes_clean_df.to_csv('diabetes_clean_df.csv', encoding='utf-8', index=False)
 # print(diabetes_clean_df.info())
 # print(diabetes_clean_df.corr())
-
-diabetic_clean_df['Age'] = pd.Categorical(diabetic_clean_df['Age'], ['0-40','40-49','50-59','60-99'], ordered=True)
-not_diabetic_clean_df['Age'] = pd.Categorical(not_diabetic_clean_df['Age'], ['0-40','40-49','50-59','60-99'], ordered=True)
 
 diab_df = pd.read_csv('diab_clean.csv')
 not_diab_df = pd.read_csv('not_diab_clean.csv')
@@ -220,45 +218,36 @@ st.caption('Matrix of Correlation')
 st.subheader('Diabetes and Age')
 col1_1, col1_2 = st.columns(2)
 with col1_1:
-    diabetic_label = ['Non-Diabetic', 'Diabetic']
+    label = ['Non-Diabetic', 'Diabetic']
     diabetic_count = list(diabetes_clean_df['Diabetic'].value_counts())
-    colors_df = ['#becee6', '#4287f5'] # not / diab
+    colors_df = ['#becee6', '#4287f5'] # not, diab
     explode = (0.1, 0)
     fig, ax = plt.subplots(figsize=(6, 4))
     ax.pie(diabetic_count, explode=explode, autopct='%.1f%%',
             shadow=False, startangle=90, colors=colors_df)
     ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-    plt.legend(diabetic_label, loc='best')
+    plt.legend(label, loc='best')
     st.pyplot(fig)
     st.caption('Diabetic distribution')
 with col1_2:
+    # sort the dataframe by the age column
+    diab_df = diab_df.sort_values(by='Age')
+    not_diab_df = not_diab_df.sort_values(by='Age')
+
     fig, ax = plt.subplots(figsize=(6, 4))
-    ax.hist([diabetes_clean_df.Age,
-        not_diab_df.Age], 
+    ax.hist([diab_df.Age, not_diab_df.Age], 
         label=['Diabetic', 'Non-Diabetic'], 
         color=['#4287f5', '#becee6'], 
-        bins=4
+        bins=len(diab_df['Age'].unique())
     )
-    # diabetic_clean_df.mycolumn.plot.bar()
     ax.set_xlabel("Age")
     ax.set_ylabel("Number of people")
+    # set the x-axis labels to the unique values in the age column
+    ax.set_xticks(diab_df['Age'].unique())
+    ax.set_xticklabels(diab_df['Age'].unique())
     plt.legend(loc='upper right')
     st.write(fig)
     st.caption('Diabetes and Age')
-#     st.caption('Diabetes and Age')
-#     fig, ax = plt.subplots(figsize=(6, 4))
-#     ax.hist([diabetic_clean_df.Age,
-#              not_diabetic_clean_df.Age], 
-#              label=['Diabetic', 'Non-Diabetic'], 
-#              color=['#4287f5', '#becee6'], 
-#              bins=4
-#     )
-#     # diabetic_clean_df.mycolumn.plot.bar()
-#     ax.set_xlabel("Age")
-#     ax.set_ylabel("Number of people")
-#     plt.legend(loc='upper right')
-#     st.write(fig)
-#     st.caption('Diabetes and Age')
 
 st.subheader('Plot Diabetic and BMI')
 fig, ax = plt.subplots()
@@ -381,36 +370,36 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 # ------ CLASSIFICATION MODEL ------
 # Scale the features
-scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
+# scaler = StandardScaler()
+# X_train = scaler.fit_transform(X_train)
+# X_test = scaler.transform(X_test)
 
-# Train the model
-model = RandomForestClassifier(n_estimators=100, random_state=42)
-model.fit(X_train, y_train)
+# # Train the model
+# model = RandomForestClassifier(n_estimators=100, random_state=42)
+# model.fit(X_train, y_train)
 
-# Evaluate the model
-y_pred = model.predict(X_test)
-st.write("Accuracy:", accuracy_score(y_test, y_pred))
+# # Evaluate the model
+# y_pred = model.predict(X_test)
+# st.write("Accuracy:", accuracy_score(y_test, y_pred))
 
-# ------ LOGISTIC REGRESSION ------
-from sklearn.linear_model import LogisticRegression
-# Create an instance of the classifier
-clf = LogisticRegression()
+# # ------ LOGISTIC REGRESSION ------
+# from sklearn.linear_model import LogisticRegression
+# # Create an instance of the classifier
+# clf = LogisticRegression()
 
-# Train the model on the training data
-clf.fit(X_train, y_train)
+# # Train the model on the training data
+# clf.fit(X_train, y_train)
 
-from sklearn.metrics import accuracy_score, precision_score, f1_score
-# Make predictions on the test set
-y_pred = clf.predict(X_test)
+# from sklearn.metrics import accuracy_score, precision_score, f1_score
+# # Make predictions on the test set
+# y_pred = clf.predict(X_test)
 
-# Calculate the accuracy, precision, and F1 score
-acc = accuracy_score(y_test, y_pred)
-prec = precision_score(y_test, y_pred)
-f1 = f1_score(y_test, y_pred)
+# # Calculate the accuracy, precision, and F1 score
+# acc = accuracy_score(y_test, y_pred)
+# prec = precision_score(y_test, y_pred)
+# f1 = f1_score(y_test, y_pred)
 
-# Print the results
-print(f'Accuracy: {acc:.2f}')
-print(f'Precision: {prec:.2f}')
-print(f'F1 Score: {f1:.2f}')
+# # Print the results
+# print(f'Accuracy: {acc:.2f}')
+# print(f'Precision: {prec:.2f}')
+# print(f'F1 Score: {f1:.2f}')
