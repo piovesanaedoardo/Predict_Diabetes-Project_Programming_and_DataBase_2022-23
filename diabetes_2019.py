@@ -59,13 +59,9 @@ print(diabetes_df.describe())
 
 # Replacing in col 'Age' less than 40 with 0-40
 diabetes_df['Age'].replace('less than 40','0-40', inplace=True)
-# Replacing in col 'Age' 40-49 with 40,49
-# diabetes_df['Age'].replace('40-49','40-49', inplace=True)
-# Replacing in col 'Age' 50-59 with 50,59
-# diabetes_df['Age'].replace('50-59','50-59', inplace=True)
-# Replacing in col 'Gender' Female with 1
+# Replacing in col '60 or older' Female with 60-99
 diabetes_df['Age'].replace('60 or older','60-99', inplace=True)
-# print(diabetes_df['Age'].unique())
+print(diabetes_df['Age'].unique())
 
 # Replacing in col 'Gender' Male with 0
 diabetes_df['Gender'].replace('Male','0', inplace=True)
@@ -175,25 +171,20 @@ not_diabetic_df = diabetes_df[not_diabetic_mask]
 diabetic_df.to_csv('diab_clean.csv', encoding='utf-8', index=False)
 diabetic_clean_df = pd.read_csv('diab_clean.csv') #diab_clean_try
 diabetic_clean_df['Diabetic'] = diabetic_clean_df['Diabetic'].fillna(1)
-# print(diabetic_clean_df.info())
-# print(diabetic_clean_df.corr())
+
 not_diabetic_df.to_csv('not_diab_clean.csv', encoding='utf-8', index=False)
 not_diabetic_clean_df = pd.read_csv('not_diab_clean.csv')
 not_diabetic_clean_df['Diabetic'] = not_diabetic_clean_df['Diabetic'].fillna(0)
-# print(not_diabetic_clean_df.info())
-# print(not_diabetic_clean_df.corr())
-
-# diabetic_clean_df.Age = pd.Categorical(diabetic_clean_df.Age, categories=['0-40','40-49','50-59','60-99'], ordered=True)
-# not_diabetic_clean_df.Age = pd.Categorical(not_diabetic_clean_df.Age, categories=['0-40','40-49','50-59','60-99'], ordered=True)
 
 frames = [diabetic_clean_df, not_diabetic_clean_df]
 diabetes_clean_df = pd.concat(frames)
 diabetes_clean_df.to_csv('diabetes_clean_df.csv', encoding='utf-8', index=False)
-# print(diabetes_clean_df.info())
-# print(diabetes_clean_df.corr())
 
 diab_df = pd.read_csv('diab_clean.csv')
 not_diab_df = pd.read_csv('not_diab_clean.csv')
+
+# print(diabetes_clean_df.info())
+# print(diabetes_clean_df.corr())
 
 # ---------------------------- 1.3 Show some interesting plots ----------------------------
 st.header('Diabetes Dataset 2019')
@@ -354,7 +345,7 @@ with st.expander("Show some interesting plots"):
                 label=['Diabetic', 'Non-Diabetic'], 
                 color=['#4287f5', '#becee6'], 
                 bins=10,
-                ) #.loc[['none', 'less than half an hr', 'more than half an hr', 'one hr or more']]
+                )
         ax.set_ylabel("UriationFreq")
         plt.legend(loc='upper right')
         st.write(fig)
@@ -368,14 +359,11 @@ with st.expander('Show model'):
 
     y = diabetes_clean_df.Diabetic
 
-    select_model = st.selectbox('Select model:', ['RandomForest','LogisticRegression'])
+    model = LogisticRegression()
 
-    model = RandomForestClassifier()
-
-    if select_model == 'LogisticRegression':
-        model = LogisticRegression()
-
-    choices = st.multiselect('Select features', ["Gender","Family_Diabetes","highBP","PhysicallyActive","BMI","Pdiabetes","UriationFreq", "Smoking","Alcohol","Sleep","SoundSleep","RegularMedicine","JunkFood","Stress","BPLevel","Pregancies"])
+    choices = st.multiselect('Select features', ["Gender","Family_Diabetes","highBP","PhysicallyActive","BMI",
+                                                 "Pdiabetes","UriationFreq", "Smoking","Alcohol","Sleep","SoundSleep",
+                                                 "RegularMedicine","JunkFood","Stress","BPLevel","Pregancies"])
 
     test_size = st.slider('Test size: ', min_value=0.1, max_value=0.9, step =0.1)
 
