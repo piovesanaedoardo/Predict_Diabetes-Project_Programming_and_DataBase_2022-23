@@ -5,7 +5,6 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 
 diabetes_df = pd.read_csv('diabetes_dataset__2019.csv')
@@ -14,7 +13,7 @@ diabetes_df = pd.read_csv('diabetes_dataset__2019.csv')
 # streamlit run .\diabetes_2019.py
 
 # ---------------------------- 1.1 Explore the dataset ----------------------------
-# print(diabetes_df.info())
+print(diabetes_df.info())
 # Data columns (total 18 columns):
 #  #   Column            Non-Null Count  Dtype
 # ---  ------            --------------  -----
@@ -37,7 +36,7 @@ diabetes_df = pd.read_csv('diabetes_dataset__2019.csv')
 #  16  UriationFreq      952 non-null    object
 #  17  Diabetic          951 non-null    object
 
-# print(diabetes_df.describe())
+print(diabetes_df.describe())
 
 # print(diabetes_df.corr())
 #                  BMI     Sleep  SoundSleep  Pregancies
