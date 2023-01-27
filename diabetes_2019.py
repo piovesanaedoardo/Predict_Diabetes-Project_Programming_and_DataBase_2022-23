@@ -187,9 +187,10 @@ not_diab_df = pd.read_csv('not_diab_clean.csv')
 # print(diabetes_clean_df.corr())
 
 # ---------------------------- 1.3 Show some interesting plots ----------------------------
-st.header('Diabetes Dataset 2019')
-st.subheader('Write a caption.')
-st.write('The aim of this ...')
+st.header("Diabetes Dataset's 2019")
+st.subheader('Does the patient have Diabetes?')
+st.write("""The aim of this project is analyse the Diabetes dataset's in order to predict if a person has the Diabetes Type 2. 
+            In this dataset there are 17 independent variables and one binary dependent, Diabetes.""")
 
 st.sidebar.subheader('Settings')
 if st.sidebar.checkbox('Display DataFrame'):
