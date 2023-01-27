@@ -51,17 +51,16 @@ print(diabetes_df.describe())
 
 # ---------------------------- 1.2 Clean up the dataset ----------------------------
 # see the value of each column
-# print('see the value of each column')
-# for col in diabetes_df.columns:
-#     print(col)
-#     print(diabetes_df[col].value_counts())
-#     print("\n")
+print('Value of each column')
+for col in diabetes_df.columns:
+    print(col)
+    print(diabetes_df[col].value_counts())
+    print("\n")
 
 # Replacing in col 'Age' less than 40 with 0-40
 diabetes_df['Age'].replace('less than 40','0-40', inplace=True)
 # Replacing in col '60 or older' Female with 60-99
 diabetes_df['Age'].replace('60 or older','60-99', inplace=True)
-print(diabetes_df['Age'].unique())
 
 # Replacing in col 'Gender' Male with 0
 diabetes_df['Gender'].replace('Male','0', inplace=True)
@@ -121,7 +120,7 @@ diabetes_df['Stress'].replace('very often','2', inplace=True)
 # Replacing in col 'Stress' always with 3
 diabetes_df['Stress'].replace('always','3', inplace=True)
 
-# remove capital letter and spacing
+# remove capital letter and space
 diabetes_df['BPLevel'] = diabetes_df['BPLevel'].str.lower().str.strip()
 # Replacing in col 'BPLevel' low with 0
 diabetes_df['BPLevel'].replace('low',0, inplace=True)
@@ -159,7 +158,8 @@ diabetes_df['Pregancies'] = diabetes_df['Pregancies'].fillna(0)
 # So i take only the rows where BMI is not null
 diabetes_df = diabetes_df[diabetes_df['BMI'].notna()]
 
-# print(diabetes_df.info())
+print('--------- Cleaned dataset ---------')
+print(diabetes_df.info())
 
 # split df in 2: diabets and not diabets
 diabetic_mask = diabetes_df['Diabetic'] == '1'
@@ -169,7 +169,7 @@ not_diabetic_mask = diabetes_df['Diabetic'] == '0'
 not_diabetic_df = diabetes_df[not_diabetic_mask]
 
 diabetic_df.to_csv('diab_clean.csv', encoding='utf-8', index=False)
-diabetic_clean_df = pd.read_csv('diab_clean.csv') #diab_clean_try
+diabetic_clean_df = pd.read_csv('diab_clean.csv')
 diabetic_clean_df['Diabetic'] = diabetic_clean_df['Diabetic'].fillna(1)
 
 not_diabetic_df.to_csv('not_diab_clean.csv', encoding='utf-8', index=False)
@@ -183,8 +183,9 @@ diabetes_clean_df.to_csv('diabetes_clean_df.csv', encoding='utf-8', index=False)
 diab_df = pd.read_csv('diab_clean.csv')
 not_diab_df = pd.read_csv('not_diab_clean.csv')
 
-# print(diabetes_clean_df.info())
-# print(diabetes_clean_df.corr())
+print('--------- Cleaned dataset merged ---------')
+print(diabetes_clean_df.info())
+print(diabetes_clean_df.corr())
 
 # ---------------------------- 1.3 Show some interesting plots ----------------------------
 st.header("Diabetes Dataset's 2019")
