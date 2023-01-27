@@ -188,7 +188,7 @@ print(diabetes_clean_df.info())
 print(diabetes_clean_df.corr())
 
 # ---------------------------- 1.3 Show some interesting plots ----------------------------
-st.header("Diabetes Dataset's 2019")
+st.title("Diabetes Dataset's 2019")
 st.subheader('Does the patient have Diabetes?')
 st.write("""The aim of this project is analyse the Diabetes dataset's in order to predict if a person has the Diabetes Type 2. 
             In this dataset there are 17 independent variables and one binary dependent, Diabetes.""")
@@ -199,32 +199,48 @@ if st.sidebar.checkbox('Display DataFrame'):
     st.write(diabetes_clean_df)
 
 st.header('1.3 - Some interesting plots')
-with st.expander("Show some interesting plots"):
-    st.subheader('Correlation Matrix')
+st.subheader('Correlation Matrix')
+with st.expander('Show Correlation Matrix plot'):
+    st.title('Correlation Matrix')
     fig, ax = plt.subplots(figsize=(10, 8))
     corr = diabetes_clean_df.corr()
     sns.heatmap(corr, 
-        cmap=sns.color_palette("light:#124683", n_colors=20), # 220, 10 # diverging_palette(150, 10, as_cmap=True)
+        cmap=sns.color_palette("light:#124683", n_colors=20),
         vmin=-1.0, vmax=1.0,
-        square=True, ax=ax)
+        square=True, ax=ax,
+        annot=True, fmt=".2f")
     st.write(fig)
     st.caption('Write something about the Correlation Matrix...')
 
-    st.subheader('Diabetes and Age')
+st.subheader('Diabetes, Age & Gender')
+with st.expander("Show Diabetes, Age & Gender plot's"):
+    st.subheader('Diabetic distribution')
+    fig, ax = plt.subplots(figsize=(8, 6))
+    label = ['Non-Diabetic', 'Diabetic']
+    diabetic_count = list(diabetes_clean_df['Diabetic'].value_counts())
+    colors_df = ['#becee6', '#4287f5'] # not, diab
+    explode = (0.1, 0)
+    ax.pie(diabetic_count, explode=explode, autopct='%.1f%%',
+            shadow=False, startangle=90, colors=colors_df)
+    ax.axis('equal')  # equal aspect ratio ensures that pie is drawn as a circle
+    plt.legend(label, loc='best')
+    st.pyplot(fig)
+    
     col1_1, col1_2 = st.columns(2)
     with col1_1:
-        label = ['Non-Diabetic', 'Diabetic']
-        diabetic_count = list(diabetes_clean_df['Diabetic'].value_counts())
-        colors_df = ['#becee6', '#4287f5'] # not, diab
+        st.subheader('Diabetes & Gender')
+        diabetic_label = ['Diabetic Male', 'Diabetic Female']
+        diabetic_count = list(diab_df['Gender'].value_counts())
+        colors_df = ['#4287f5', '#D991C3']
         explode = (0.1, 0)
         fig, ax = plt.subplots(figsize=(6, 4))
         ax.pie(diabetic_count, explode=explode, autopct='%.1f%%',
                 shadow=False, startangle=90, colors=colors_df)
-        ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-        plt.legend(label, loc='best')
+        ax.axis('equal')
+        plt.legend(diabetic_label, loc='best')
         st.pyplot(fig)
-        st.caption('Diabetic distribution')
     with col1_2:
+        st.subheader('Age')
         # sort the dataframe by the age column
         diab_df = diab_df.sort_values(by='Age')
         not_diab_df = not_diab_df.sort_values(by='Age')
@@ -234,124 +250,189 @@ with st.expander("Show some interesting plots"):
             color=['#4287f5', '#becee6'], 
             bins=len(diab_df['Age'].unique())
         )
-        ax.set_xlabel("Age")
+        ax.set_xlabel("Age range")
         ax.set_ylabel("Number of people")
         # set the x-axis labels to the unique values in the age column
         ax.set_xticks(diab_df['Age'].unique())
         ax.set_xticklabels(diab_df['Age'].unique())
         plt.legend(loc='upper right')
         st.write(fig)
-        st.caption('Diabetes and Age')
 
-    st.subheader('Diabetic and BMI')
-    fig, ax = plt.subplots()
-    ax.hist([diabetic_clean_df.BMI, not_diabetic_clean_df.BMI], label=['Diabetic', 'Non-Diabetic'], color=['#4287f5', '#becee6'], bins=10)
-    ax.set_xlabel("BMI level")
-    ax.set_ylabel("Number of people")
-    plt.legend(loc='upper right')
-    st.write(fig)
-    st.caption('BMI of People with Diabet and without Diabet. If BMI is less than 18.5: underweight range. If BMI is 18.5 to <25: healthy weight range. If BMI is 25.0 to <30: overweight range. If BMI is 30.0 or higher: obesity range.')
-
+st.subheader("Healt factors's")
+with st.expander("Show Healt factors plot's"):
     col2_1, col2_2 = st.columns(2)
+    col2_3, col2_4 = st.columns(2)
     with col2_1:
-        diabetic_label = ['Diabetic with Regular Medicine', 'Diabetic without Regular Medicine']
-        diabetic_count = list(diabetic_clean_df['RegularMedicine'].value_counts())
-        colors_df = ['#4287f5', '#becee6']
-        explode = (0.1, 0)
-        fig, ax = plt.subplots()
-        ax.pie(diabetic_count, explode=explode, autopct='%.1f%%',
-                shadow=False, startangle=90, colors=colors_df)
-        ax.axis('equal')
-        plt.legend(diabetic_label, loc='best')
-        st.pyplot(fig)
-        st.caption('Diabetic Regular Medicine distribution')
+        st.subheader('Body Mass Index')
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.hist([diab_df.BMI, not_diab_df.BMI], 
+                label=['Diabetic', 'Non-Diabetic'], 
+                color=['#4287f5', '#becee6'], 
+                bins=15)
+        ax.set_xlabel("BMI level")
+        ax.set_ylabel("Number of people")
+        plt.legend(loc='upper right')
+        st.write(fig)
+        st.caption("""If BMI is less than 18.5: underweight range. 
+                    If BMI is 18.5 to <25: healthy weight range. If BMI is 25.0 to <30: overweight range. 
+                    If BMI is 30.0 or higher: obesity range.""")
+
     with col2_2:
-        diabetic_label = ['Diabetic with highBP', 'Diabetic without highBP']
-        diabetic_count = list(diabetic_clean_df['highBP'].value_counts())
-        colors_df = ['#4287f5', '#becee6']
-        explode = (0.1, 0)
-        fig, ax = plt.subplots()
-        ax.pie(diabetic_count, explode=explode, autopct='%.1f%%',
-                shadow=False, startangle=90, colors=colors_df)
-        ax.axis('equal')
-        plt.legend(diabetic_label, loc='best')
-        st.pyplot(fig)
-        st.caption('Diabetic highBP distribution')
-
-    col3_1, col3_2 = st.columns(2)
-    with col3_1:
-        diabetic_label = ['Diabetic Male', 'Diabetic Female']
-        diabetic_count = list(diabetic_clean_df['Gender'].value_counts())
-        colors_df = ['#4287f5', '#becee6']
-        explode = (0.1, 0)
-        fig, ax = plt.subplots()
-        ax.pie(diabetic_count, explode=explode, autopct='%.1f%%',
-                shadow=False, startangle=90, colors=colors_df)
-        ax.axis('equal')
-        plt.legend(diabetic_label, loc='best')
-        st.pyplot(fig)
-        st.caption('Diabetic gender distribution')
-    with col3_2:
-        fig, ax = plt.subplots()
-        ax.hist([diabetic_clean_df.PhysicallyActive, not_diabetic_clean_df.PhysicallyActive], 
-                label=['Diabetic', 'Non-Diabetic'], 
-                color=['#4287f5', '#becee6'], 
-                bins=10,
-                ) #.loc[['none', 'less than half an hr', 'more than half an hr', 'one hr or more']]
-        ax.set_ylabel("PhysicallyActive level")
-        plt.legend(loc='upper right')
-        st.write(fig)
-        st.caption('PhysicallyActive People with Diabet and without Diabet')
-
-    col4_1, col4_2 = st.columns(2)
-    with col4_1:
-        fig, ax = plt.subplots()
-        ax.hist([diabetic_clean_df.Stress, not_diabetic_clean_df.Stress], 
-                label=['Diabetic', 'Non-Diabetic'], 
-                color=['#4287f5', '#becee6'], 
-                bins=10,
-                ) # not at all, sometimes, very often, always
-        ax.set_ylabel("Stress level")
-        plt.legend(loc='upper right')
-        st.write(fig)
-        st.caption('Stress People with Diabet and without Diabet')
-    with col4_2:
-        fig, ax = plt.subplots()
-        ax.hist([diabetic_clean_df.BPLevel, not_diabetic_clean_df.BPLevel], 
-                label=['Diabetic', 'Non-Diabetic'], 
-                color=['#4287f5', '#becee6'], 
-                bins=10,
-                ) #.loc[['none', 'less than half an hr', 'more than half an hr', 'one hr or more']]
-        ax.set_ylabel("BP level")
-        plt.legend(loc='upper right')
-        st.write(fig)
-        st.caption('BPLevel People with Diabet and without Diabet')
-
-    col5_1, col5_2 = st.columns(2)
-    with col5_1:
-        diabetic_label = ['Diabetic Pdiabetes NO', 'Diabetic Pdiabetes YES']
-        diabetic_count = list(diabetic_clean_df['Pdiabetes'].value_counts())
-        # print(diabetic_clean_df['Pdiabetes'].value_counts())
-        colors_df = ['#4287f5', '#becee6']
-        explode = (0.1, 0)
-        fig, ax = plt.subplots()
-        ax.pie(diabetic_count, explode=explode, autopct='%.1f%%',
-                shadow=False, startangle=90, colors=colors_df)
-        ax.axis('equal')
-        plt.legend(diabetic_label, loc='best')
-        st.pyplot(fig)
-        st.caption('Diabetic Pdiabetes distribution')
-    with col5_2:
-        fig, ax = plt.subplots()
-        ax.hist([diabetic_clean_df.UriationFreq, not_diabetic_clean_df.UriationFreq], 
+        fig, ax = plt.subplots(figsize=(8, 6))
+        st.subheader('Blood Pressure')
+        ax.hist([diab_df.BPLevel, not_diab_df.BPLevel], 
                 label=['Diabetic', 'Non-Diabetic'], 
                 color=['#4287f5', '#becee6'], 
                 bins=10,
                 )
-        ax.set_ylabel("UriationFreq")
+        ax.set_xlabel("BP level")
+        ax.set_ylabel("Number of people")
+        plt.xticks(range(0, 3))
         plt.legend(loc='upper right')
         st.write(fig)
-        st.caption('UriationFreq People with Diabet and without Diabet')
+        st.caption("""0 corresponds to low BP, 
+                      1 to normal BP and 
+                      2 to high BP.""")
+
+    with col2_3:
+        fig, ax = plt.subplots(figsize=(8, 6))
+        st.subheader('Physical Activity')
+        ax.hist([diab_df.PhysicallyActive, not_diab_df.PhysicallyActive], 
+                label=['Diabetic', 'Non-Diabetic'], 
+                color=['#4287f5', '#becee6'], 
+                bins=10,
+                )
+        ax.set_xlabel("PhysicallyActive level")
+        ax.set_ylabel("Number of people")
+        plt.xticks(range(0, 4))
+        plt.legend(loc='upper right')
+        st.write(fig)
+        st.caption("""0: none, 
+                      1: less than half an hr, 
+                      2: more than half an hr, 
+                      3: one hr or more.""")
+
+    with col2_4:
+        fig, ax = plt.subplots(figsize=(8, 6))
+        st.subheader('Stress')
+        ax.hist([diab_df.Stress, not_diab_df.Stress], 
+                label=['Diabetic', 'Non-Diabetic'], 
+                color=['#4287f5', '#becee6'], 
+                bins=10,
+                )
+        ax.set_xlabel("Stress level")
+        ax.set_ylabel("Number of people")
+        plt.xticks(range(0, 4))
+        plt.legend(loc='upper right')
+        st.write(fig)
+        st.caption("""0: not at all, 
+                      1: sometimes, 
+                      2: very often, 
+                      3: always.""")
+
+st.subheader("Focus on Diabetic people")
+with st.expander("Show the focus on Diabetic people"):
+    col3_1, col3_2 = st.columns(2)
+    col3_3, col3_4 = st.columns(2)
+    col3_5, col3_6 = st.columns(2)
+
+    with col3_1:
+        st.subheader('Family Diabetes')
+        diabetic_label = ['Diabetic with family Diabetes', 'Diabetic without family Diabetes']
+        diabetic_count = list(diab_df['Family_Diabetes'].value_counts())
+        colors_df = ['#4287f5', '#becee6']
+        explode = (0.1, 0)
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.pie(diabetic_count, explode=explode, autopct='%.1f%%',
+                shadow=False, startangle=90, colors=colors_df)
+        ax.axis('equal')
+        plt.legend(diabetic_label, loc='best')
+        st.pyplot(fig)
+        st.caption('Family history with diabetes.')
+        
+    with col3_2:
+        st.subheader('Regular Medicine')
+        diabetic_label = ['Diabetic with Regular Medicine', 'Diabetic without Regular Medicine']
+        diabetic_count = list(diab_df['RegularMedicine'].value_counts())
+        colors_df = ['#4287f5', '#becee6']
+        explode = (0.1, 0)
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.pie(diabetic_count, explode=explode, autopct='%.1f%%',
+                shadow=False, startangle=90, colors=colors_df)
+        ax.axis('equal')
+        plt.legend(diabetic_label, loc='best')
+        st.pyplot(fig)
+        st.caption('Diabetic Regular Medicine distribution.')
+
+    with col3_3:
+        st.subheader('Smoking')
+        diabetic_label = ['Diabetic smoker', 'Diabetic not smoker']
+        diabetic_count = list(diab_df['Smoking'].value_counts())
+        colors_df = ['#4287f5', '#becee6']
+        explode = (0.1, 0)
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.pie(diabetic_count, explode=explode, autopct='%.1f%%',
+                shadow=False, startangle=90, colors=colors_df)
+        ax.axis('equal')
+        plt.legend(diabetic_label, loc='best')
+        st.pyplot(fig)
+        st.caption('Diabetic Smoking distribution.')
+    with col3_4:
+        st.subheader('Alcohol')
+        diabetic_label = ['Diabetic Alcohol', 'Diabetic not Alcohol']
+        diabetic_count = list(diab_df['Alcohol'].value_counts())
+        colors_df = ['#4287f5', '#becee6']
+        explode = (0.1, 0)
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.pie(diabetic_count, explode=explode, autopct='%.1f%%',
+                shadow=False, startangle=90, colors=colors_df)
+        ax.axis('equal')
+        plt.legend(diabetic_label, loc='best')
+        st.pyplot(fig)
+        st.caption('Diabetic Alcohol distribution')
+
+    with col3_5:
+        st.subheader('JunkFood')
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.barh(diab_df.JunkFood.unique(), diab_df.JunkFood.value_counts(), 
+                color=['#8dade0', '#b6ccf0', '#4287f5', '#659af0']) # 4 1 3 2
+        plt.xlabel('Number of diab peopl')
+        plt.ylabel('JunkFood level')
+        plt.yticks(range(0, 4))
+        plt.legend(loc='upper right')
+        st.write(fig)
+        st.caption("""0: occasionally, 
+                      1: often, 
+                      2: very often, 
+                      3: always""")
+
+    with col3_6:
+        st.subheader('Sleep')
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.barh(diab_df.Sleep.unique(), diab_df.Sleep.value_counts(),
+                color=['#788ae3', '#9eaae6', '#052beb', '#3d58e0', '#02115e', '#6179ed', '#122aa3'])
+        plt.xlabel('Number of diab peopl')
+        plt.ylabel('Sleep level')
+        plt.yticks(range(min(diab_df.Sleep.unique()), max(diab_df.Sleep.unique())+1))
+        plt.legend(loc='upper right')
+        st.write(fig)
+        st.caption("Hrs sleep")
+        
+
+    # col5_1, col5_2 = st.columns(2)
+    # with col5_1:
+    #     diabetic_label = ['Diabetic Pdiabetes NO', 'Diabetic Pdiabetes YES']
+    #     diabetic_count = list(diabetic_clean_df['Pdiabetes'].value_counts())
+    #     # print(diabetic_clean_df['Pdiabetes'].value_counts())
+    #     colors_df = ['#4287f5', '#becee6']
+    #     explode = (0.1, 0)
+    #     fig, ax = plt.subplots()
+    #     ax.pie(diabetic_count, explode=explode, autopct='%.1f%%',
+    #             shadow=False, startangle=90, colors=colors_df)
+    #     ax.axis('equal')
+    #     plt.legend(diabetic_label, loc='best')
+    #     st.pyplot(fig)
+    #     st.caption('Diabetic Pdiabetes distribution')
 
 # ---------------------------- 2 Find a model that explains tha data ----------------------------
 st.header('2 - Models')
