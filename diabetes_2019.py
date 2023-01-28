@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score
+import heapq
 
 diabetes_df = pd.read_csv('diabetes_dataset__2019.csv')
 
@@ -198,19 +198,7 @@ if st.sidebar.checkbox('Display DataFrame'):
     st.write('The DataFrame')
     st.write(diabetes_clean_df)
 
-st.header('1.3 - Some interesting plots')
-st.subheader('Correlation Matrix')
-with st.expander('Show Correlation Matrix plot'):
-    st.title('Correlation Matrix')
-    fig, ax = plt.subplots(figsize=(10, 8))
-    corr = diabetes_clean_df.corr()
-    sns.heatmap(corr, 
-        cmap=sns.color_palette("light:#124683", n_colors=20),
-        vmin=-1.0, vmax=1.0,
-        square=True, ax=ax,
-        annot=True, fmt=".2f")
-    st.write(fig)
-    st.caption('Write something about the Correlation Matrix...')
+st.header('Interesting plots')
 
 st.subheader('Diabetes, Age & Gender')
 with st.expander("Show Diabetes, Age & Gender plot's"):
@@ -348,7 +336,7 @@ with st.expander("Show the focus on Diabetic people"):
         ax.axis('equal')
         plt.legend(diabetic_label, loc='best')
         st.pyplot(fig)
-        st.caption('Family history with diabetes.')
+        st.caption('Diabetic patients and family history of Diabetes.')
         
     with col3_2:
         st.subheader('Regular Medicine')
@@ -362,7 +350,7 @@ with st.expander("Show the focus on Diabetic people"):
         ax.axis('equal')
         plt.legend(diabetic_label, loc='best')
         st.pyplot(fig)
-        st.caption('Diabetic Regular Medicine distribution.')
+        st.caption('Diabetic patients and the use of regular Medicine.')
 
     with col3_3:
         st.subheader('Smoking')
@@ -376,7 +364,7 @@ with st.expander("Show the focus on Diabetic people"):
         ax.axis('equal')
         plt.legend(diabetic_label, loc='best')
         st.pyplot(fig)
-        st.caption('Diabetic Smoking distribution.')
+        st.caption('Smoking and nonsmoking Diabetic patients.')
     with col3_4:
         st.subheader('Alcohol')
         diabetic_label = ['Diabetic Alcohol', 'Diabetic not Alcohol']
@@ -389,7 +377,7 @@ with st.expander("Show the focus on Diabetic people"):
         ax.axis('equal')
         plt.legend(diabetic_label, loc='best')
         st.pyplot(fig)
-        st.caption('Diabetic Alcohol distribution')
+        st.caption('Diabetic patients who are alchol users and non-alchol users.')
 
     with col3_5:
         st.subheader('JunkFood')
@@ -416,26 +404,30 @@ with st.expander("Show the focus on Diabetic people"):
         plt.yticks(range(min(diab_df.Sleep.unique()), max(diab_df.Sleep.unique())+1))
         plt.legend(loc='upper right')
         st.write(fig)
-        st.caption("Hrs sleep")
-        
+        st.caption("Sleep hours of Diabetic patients.")
 
-    # col5_1, col5_2 = st.columns(2)
-    # with col5_1:
-    #     diabetic_label = ['Diabetic Pdiabetes NO', 'Diabetic Pdiabetes YES']
-    #     diabetic_count = list(diabetic_clean_df['Pdiabetes'].value_counts())
-    #     # print(diabetic_clean_df['Pdiabetes'].value_counts())
-    #     colors_df = ['#4287f5', '#becee6']
-    #     explode = (0.1, 0)
-    #     fig, ax = plt.subplots()
-    #     ax.pie(diabetic_count, explode=explode, autopct='%.1f%%',
-    #             shadow=False, startangle=90, colors=colors_df)
-    #     ax.axis('equal')
-    #     plt.legend(diabetic_label, loc='best')
-    #     st.pyplot(fig)
-    #     st.caption('Diabetic Pdiabetes distribution')
+st.subheader('Correlation Matrix')
+with st.expander('Show Correlation Matrix plot'):
+    st.title('Correlation Matrix')
+    fig, ax = plt.subplots(figsize=(10, 8))
+    corr = diabetes_clean_df.corr()
+    sns.heatmap(corr, 
+        cmap=sns.color_palette("light:#124683", n_colors=20),
+        vmin=-1.0, vmax=1.0,
+        square=True, ax=ax,
+        annot=True, fmt=".2f")
+    st.write(fig)
+    # show the 5 highest_values (excluding 1 and duplicates)
+    highest_values = [float(item.get_text()) for item in ax.texts]
+    filtered_highest_values = [val for val in highest_values if val != 1]
+    unique_highest_values = set(filtered_highest_values)
+    top_5_highest_values = heapq.nlargest(5, unique_highest_values)
+
+    print(top_5_highest_values)
+    st.caption('The most correlations between the variable "Diabetic" are the variables "RegularMedicine" and "BPLevel".')
 
 # ---------------------------- 2 Find a model that explains tha data ----------------------------
-st.header('2 - Models')
+st.header('Model that explains the data')
 with st.expander('Show model'):
 
     st.subheader('A model to predict who has the Diabetes')
@@ -444,7 +436,7 @@ with st.expander('Show model'):
 
     model = LogisticRegression()
 
-    choices = st.multiselect('Select features', ["Gender","Family_Diabetes","highBP","PhysicallyActive","BMI",
+    choices = st.multiselect('Select the features to construct the model:', ["Gender","Family_Diabetes","highBP","PhysicallyActive","BMI",
                                                  "Pdiabetes","UriationFreq", "Smoking","Alcohol","Sleep","SoundSleep",
                                                  "RegularMedicine","JunkFood","Stress","BPLevel","Pregancies"])
 
