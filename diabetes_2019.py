@@ -290,15 +290,15 @@ with st.expander("Show Healt factors plot's"):
                 color=['#4287f5', '#becee6'], 
                 bins=10,
                 )
-        ax.set_xlabel("PhysicallyActive level")
+        ax.set_xlabel("Hours of weekly physical activity")
         ax.set_ylabel("Number of people")
         plt.xticks(range(0, 4))
         plt.legend(loc='upper right')
         st.write(fig)
         st.caption("""0: none, 
-                      1: less than half an hr, 
-                      2: more than half an hr, 
-                      3: one hr or more.""")
+                      1: less than half an hr per week, 
+                      2: more than half an hr per week, 
+                      3: one hr or more per week.""")
 
     with col2_4:
         fig, ax = plt.subplots(figsize=(8, 6))
@@ -384,7 +384,7 @@ with st.expander("Show the focus on Diabetic people"):
         fig, ax = plt.subplots(figsize=(8, 6))
         ax.barh(diab_df.JunkFood.unique(), diab_df.JunkFood.value_counts(), 
                 color=['#8dade0', '#b6ccf0', '#4287f5', '#659af0']) # 4 1 3 2
-        plt.xlabel('Number of diab peopl')
+        plt.xlabel('Number of diabectic patients')
         plt.ylabel('JunkFood level')
         plt.yticks(range(0, 4))
         plt.legend(loc='upper right')
@@ -399,8 +399,8 @@ with st.expander("Show the focus on Diabetic people"):
         fig, ax = plt.subplots(figsize=(8, 6))
         ax.barh(diab_df.Sleep.unique(), diab_df.Sleep.value_counts(),
                 color=['#788ae3', '#9eaae6', '#052beb', '#3d58e0', '#02115e', '#6179ed', '#122aa3'])
-        plt.xlabel('Number of diab peopl')
-        plt.ylabel('Sleep level')
+        plt.xlabel('Number of diabectic patients')
+        plt.ylabel('Hours of sleep')
         plt.yticks(range(min(diab_df.Sleep.unique()), max(diab_df.Sleep.unique())+1))
         plt.legend(loc='upper right')
         st.write(fig)
